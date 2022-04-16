@@ -25,3 +25,23 @@ def merge_into_existing_model(original_model, model_to_add):
     # loc_model = merge_models(model_to_add)
     loc_model = original_model + model_to_add
     return [phrase for phrase in (set(i for i in loc_model))]
+
+
+# if user_book == "users" -> phrase_dict is a dict
+# if user_book == "book" -> phrase_dict is a list
+def join_phrases_into_words(phrase_dict, users_book="book"):
+    all_words = None
+    local_words = None
+    if users_book == "users":
+        all_words = {}
+        for key in phrase_dict.keys():
+            local_words = list(map(lambda x: x.split(), list(phrase_dict[key])))
+            local_words = list(sum(local_words, []))
+            all_words[key]= local_words
+        return all_words
+    elif users_book == "book":
+        all_words = list(map(lambda x: x.split(), list(phrase_dict)))
+        return list(sum(all_words, []))
+    else:
+        return None
+
