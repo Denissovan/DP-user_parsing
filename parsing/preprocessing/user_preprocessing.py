@@ -135,7 +135,7 @@ def preproces_questions_into_tokens(q_dict):
         q_dict[key] = delete_unwanted_signs(q_dict[key])
 
 
-def save_reputation_list(path_dir, file_name, user_dict):
+def save_dict_to_file(path_dir, file_name, user_dict):
   if not os.path.exists(os.path.join(path_dir, file_name)):
       with open(os.path.join(path_dir, file_name), "a") as fi:
           fi.writelines(str(user_dict))

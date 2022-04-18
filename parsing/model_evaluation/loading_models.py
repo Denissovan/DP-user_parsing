@@ -48,3 +48,11 @@ def get_user_reputation_dict_from_file(path):
         rep_dict = eval(f.read())
         rep_dict = { key: int(val) for key, val in rep_dict.items()}
         return rep_dict
+
+
+def get_q_a_dict_from_file(path):
+    with open(path, "r") as f:
+        # file_string = f.read().strip()
+        rep_dict = eval(f.read())
+        rep_dict = { key: (int(val1), int(val2)) for key, (val1, val2) in rep_dict.items()}
+        return rep_dict
