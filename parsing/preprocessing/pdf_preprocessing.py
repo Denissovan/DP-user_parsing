@@ -1,3 +1,4 @@
+import gc
 import re
 import fitz
 import pandas as pd
@@ -31,10 +32,20 @@ def get_section_dict(sections, level, section_range_start, section_range_end):
   df_section_list['chapter_lvl'] = df_section_list['chapter_lvl'].astype(int)
   df_section_list['begin_page'] = df_section_list['begin_page'].astype(int)
 
-  pd_dict = df_section_list.loc[df_section_list['chapter_lvl'] <= level, ['chapter_name', 'begin_page']].to_dict(orient = 'list')
-  combined = dict(zip(pd_dict['begin_page'], pd_dict['chapter_name']))
+#   pd_dict = df_section_list.loc[df_section_list['chapter_lvl'] <= level, ['chapter_name', 'begin_page']].to_dict(orient = 'list')
+#   combined = dict(zip(pd_dict['begin_page'], pd_dict['chapter_name']))
   # lookup = set()  # a temporary lookup set
   # ls = [x for x in ls if x not in lookup and lookup.add(x) is None]
+
+  unique_begin_page_vals = df_section_list.loc[df_section_list['chapter_lvl'] <= level, ['begin_page']]['begin_page']
+  
+  combined = {}
+
+  for page in unique_begin_page_vals.unique():
+    local_df = df_section_list.loc[df_section_list['begin_page'] == page]
+    val = "|".join(list(local_df['chapter_name'])) if len(local_df) > 1 else "".join(list(local_df['chapter_name']))
+    combined[page] = val
+
   return combined
 
 
@@ -63,6 +74,11 @@ def remove_newlines(sections):
         sections[idx] = re.sub('\n', ' ', sections[idx])
 
 
+def remove_carriage_return(sections):
+    for idx,i in enumerate(sections):
+        sections[idx] = re.sub('\r', ' ', sections[idx])
+
+
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -88,4 +104,12 @@ def preproces_sections_into_tokens(section_dict):
         remove_floating_point_nums(section_dict[key])
     for key in tqdm.tqdm(section_dict.keys()):
         remove_newlines(section_dict[key])
+    for key in tqdm.tqdm(section_dict.keys()):
+        remove_carriage_return(section_dict[key])
+
+    whole_sections = { key : "".join(section_dict[key]) for key in section_dict.keys() }
+    tokenized_sections = { key : tokenize(whole_sections[key]) for key in whole_sections.keys() }
+    del whole_sections
+    gc.collect()
+    return { key : delete_unwanted_signs(tokenized_sections[key]) for key in tokenized_sections.keys() } 
 
