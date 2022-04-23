@@ -80,7 +80,7 @@ def parse_section(section, key, pos_relations, path_dir):
           for splited in token_splited:
               count_of_words = len(splited.split(" "))
               print(len(splited))
-              if splited is not None and count_of_words > 1 and len(splited) < 500:
+              if splited is not None and count_of_words > 2 and len(splited) < 500:
                   print(f"Splited is : {splited}")
                   dependency_words.append(parse_dependencies(splited, pos_relations, path_dir, key))
                   # parse_dependencies(splited, pos_relations, path_dir, key)

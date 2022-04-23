@@ -43,7 +43,7 @@ def get_section_dict(sections, level, section_range_start, section_range_end):
 
   for page in unique_begin_page_vals.unique():
     local_df = df_section_list.loc[df_section_list['begin_page'] == page]
-    val = "|".join(list(local_df['chapter_name'])) if len(local_df) > 1 else "".join(list(local_df['chapter_name']))
+    val = "&".join(list(local_df['chapter_name'])) if len(local_df) > 1 else "".join(list(local_df['chapter_name']))
     combined[page] = val
 
   return combined
@@ -109,7 +109,7 @@ def preproces_sections_into_tokens(section_dict):
 
     whole_sections = { key : "".join(section_dict[key]) for key in section_dict.keys() }
     tokenized_sections = { key : tokenize(whole_sections[key]) for key in whole_sections.keys() }
-    del whole_sections
-    gc.collect()
+    # del whole_sections
+    # gc.collect()
     return { key : delete_unwanted_signs(tokenized_sections[key]) for key in tokenized_sections.keys() } 
 
