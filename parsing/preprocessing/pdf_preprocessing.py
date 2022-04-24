@@ -43,7 +43,9 @@ def get_section_dict(sections, level, section_range_start, section_range_end):
 
   for page in unique_begin_page_vals.unique():
     local_df = df_section_list.loc[df_section_list['begin_page'] == page]
-    val = "&".join(list(local_df['chapter_name'])) if len(local_df) > 1 else "".join(list(local_df['chapter_name']))
+    local_df_list = list(local_df['chapter_name'])
+    local_df_list = [item.split(":")[0] for item in local_df_list]
+    val = "&".join(local_df_list) if len(local_df_list) > 1 else "".join(local_df_list)
     combined[page] = val
 
   return combined
