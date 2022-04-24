@@ -23,7 +23,7 @@ def trim_headers(page):
     return page.split("\n",1)[1]
 
 # section_range_end needs to be negative
-def get_section_dict(sections, level, section_range_start, section_range_end):
+def get_section_dict(sections, level, section_range_start, section_range_end, delimiter):
   section_list = [list(row) for row in sections]
   np_section_list = np.array(section_list)
 
@@ -44,7 +44,7 @@ def get_section_dict(sections, level, section_range_start, section_range_end):
   for page in unique_begin_page_vals.unique():
     local_df = df_section_list.loc[df_section_list['begin_page'] == page]
     local_df_list = list(local_df['chapter_name'])
-    local_df_list = [item.split(":")[0] for item in local_df_list]
+    local_df_list = [item.split(delimiter)[0] for item in local_df_list]
     val = "&".join(local_df_list) if len(local_df_list) > 1 else "".join(local_df_list)
     combined[page] = val
 
