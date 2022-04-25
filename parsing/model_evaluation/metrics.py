@@ -1,5 +1,6 @@
 from collections import Counter
 from scipy.spatial import distance
+import numpy as np
 
 
 # jaccard metric
@@ -48,3 +49,73 @@ def get_euclid_dis(user_dict, merged_book):
  
     results[key] = (distance.euclidean(a_vect, b_vect))
   return results
+
+
+def get_sorted_dicts(metric_dict1, ref_dict2):
+    return (dict(sorted(metric_dict1.items(), key=lambda item: item[1])), dict(sorted(ref_dict2.items(), key=lambda item: item[1])))
+
+
+def calculate_order_score(metric_dict1, ref_dict2):
+
+    sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
+
+    right = 0
+    wrong = 0
+
+    print(f"reference list: {list(sorted_ref_dict.keys())}")
+    print(f"metric list: {list(sorted_metric_dict.keys())}")
+
+    for metric_key, ref_key in zip(sorted_metric_dict.keys(), sorted_ref_dict.keys()):
+        if metric_key == ref_key:
+            right += 1
+        else:
+            wrong += 1
+
+    print(f"User on correct position: {right}")
+    print(f"User on wrong position: {wrong}")
+
+
+def calculate_max_deviation(metric_dict1, ref_dict2):
+    sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
+
+    max_deviation = 0
+
+    for idx, metric_key in enumerate(sorted_metric_dict.keys()):
+        for cur_idx, ref_key in enumerate(sorted_ref_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+            if metric_key == ref_key:
+                deviation = abs(cur_idx - idx)
+                if deviation > max_deviation:
+                    max_deviation = deviation
+    print(f"maximal deviation is: {max_deviation}")
+
+    return max_deviation
+
+
+def calculate_mean_deviation(metric_dict1, ref_dict2):
+    sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
+
+    deviation_list = []
+
+    for idx, metric_key in enumerate(sorted_metric_dict.keys()):
+        for cur_idx, ref_key in enumerate(sorted_ref_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+            if metric_key == ref_key:
+                deviation_list.append(abs(cur_idx - idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
+    print(f"deviation list is: {deviation_list}")
+    print(np.mean(np.array(deviation_list)))
+    
+    return np.mean(np.array(deviation_list))
+
+
+def calculate_total_deviation(metric_dict1, ref_dict2):
+    sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
+
+    deviation_list = []
+
+    for idx, metric_key in enumerate(sorted_metric_dict.keys()):
+        for cur_idx, ref_key in enumerate(sorted_ref_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+            if metric_key == ref_key:
+                deviation_list.append(abs(cur_idx - idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
+    print(f"deviation list is: {deviation_list}")
+    print(np.sum(np.array(deviation_list)))
+
+    return np.sum(np.array(deviation_list))
