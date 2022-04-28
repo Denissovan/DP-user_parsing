@@ -1,6 +1,9 @@
 from collections import Counter
+from itertools import count
+from statistics import mean
 from scipy.spatial import distance
 import numpy as np
+import statistics
 
 
 # jaccard metric
@@ -137,7 +140,14 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
             if metric_key == ref_key:
                 deviation_list.append(abs(cur_idx - idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
     print(f"deviation list is: {deviation_list}")
-    print(np.mean(np.array(deviation_list)))
+    mean_dev = np.mean(np.array(deviation_list))
+    bellow_mean_dev_count = len([elem for elem in deviation_list if elem < mean_dev])  # calculate count of values < mean_dev
+    # mode_dev = statistics.mode(deviation_list)
+    # bellow_mode_dev_count = len([elem for elem in deviation_list if elem < mode_dev])  # calculate count of values < mode_dev
+    print(f"mean deviation: {mean_dev}")
+    print(f"num of values bellow mean dev: {bellow_mean_dev_count}")
+    # print(f"num of values bellow mode dev: {bellow_mode_dev_count}")
+
     
     return np.mean(np.array(deviation_list))
 
