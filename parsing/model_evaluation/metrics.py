@@ -165,3 +165,7 @@ def calculate_total_deviation(metric_dict1, ref_dict2):
     print(np.sum(np.array(deviation_list)))
 
     return np.sum(np.array(deviation_list))
+
+
+def apply_transformation(transform_func, list):
+    return map(transform_func, list)
