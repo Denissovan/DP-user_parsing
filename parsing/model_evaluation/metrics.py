@@ -172,21 +172,33 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
                 deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
                 deviation_dict[ref_key] = met_idx - ref_idx  # if the num is < 0 our metric set the order much bellow as it should be
                 if scale_coef is not None:
-                    scaled_deviation_dict[ref_key] = sorted_ref_dict[ref_key] - sorted_metric_dict[ref_key]*scale_coef
+                    # deviation between ref rep and metric rep in %
+                    scaled_deviation_dict[ref_key] = (1 - ( (sorted_metric_dict[ref_key]*scale_coef) / sorted_ref_dict[ref_key] ) ) * 100 if sorted_metric_dict[ref_key] != 0 else 100
 
-    print(f"deviation list is: {deviation_list}")
+    scaled_deviation_list = list(scaled_deviation_dict.values())
+    print(f"order deviation list is: {deviation_list}")
     print(30*"*")
-    print(f"deviation dict is: {deviation_dict}")
+    print(f"order deviation dict is: {deviation_dict}")
+    print(30*"*")
+    print(f"total order dev: {np.sum(np.array(deviation_list))}")
     print(30*"*")
     print(f"scaled deviation dict is: {scaled_deviation_dict}")
     print(30*"*")
-    print(np.sum(np.array(deviation_list)))
+    if len(scaled_deviation_list) != 0:
+        print(f"mean scaled deviation is: {np.mean(np.abs(np.array(scaled_deviation_list)))}")
+        print(30*"*")
+        print(f"max scaled deviation is: {np.max(np.abs(np.array(scaled_deviation_list)))}")
+        print(30*"*")
 
     return np.sum(np.array(deviation_list))
 
 
-def normalize(normalization_func, dict):
-    return 
+def min_max_normalize(dict):
+    min_max_list = dict.values()
+    norm_min, norm_max = min(min_max_list), max(min_max_list)
+    min_max_norm = lambda x: (x - norm_min)/(norm_max - norm_min)
+
+    return { key : min_max_norm(dict[key]) for key in dict.keys() }
 
 
 def get_min_max(list):
