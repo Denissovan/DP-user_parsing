@@ -134,12 +134,17 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
     deviation_list = []
+    # deviation_dict = {}
 
-    for idx, metric_key in enumerate(sorted_metric_dict.keys()):
-        for cur_idx, ref_key in enumerate(sorted_ref_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+
+    for ref_idx, metric_key in enumerate(sorted_ref_dict.keys()):
+        for met_idx, ref_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
             if metric_key == ref_key:
-                deviation_list.append(abs(cur_idx - idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
-    print(f"deviation list is: {deviation_list}")
+                deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
+                # deviation_dict[ref_key] = ref_idx - met_idx 
+    # print(f"deviation list is: {deviation_list}")
+    # print(f"deviation dict is: {deviation_dict}")
+
     mean_dev = np.mean(np.array(deviation_list))
     bellow_mean_dev_count = len([elem for elem in deviation_list if elem < mean_dev])  # calculate count of values < mean_dev
     # mode_dev = statistics.mode(deviation_list)
@@ -152,20 +157,37 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
     return np.mean(np.array(deviation_list))
 
 
-def calculate_total_deviation(metric_dict1, ref_dict2):
+def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
     deviation_list = []
+    deviation_dict = {}
+    scaled_deviation_dict = {}
 
-    for idx, metric_key in enumerate(sorted_metric_dict.keys()):
-        for cur_idx, ref_key in enumerate(sorted_ref_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+    
+
+    for ref_idx, metric_key in enumerate(sorted_ref_dict.keys()):
+        for met_idx, ref_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
             if metric_key == ref_key:
-                deviation_list.append(abs(cur_idx - idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
+                deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
+                deviation_dict[ref_key] = met_idx - ref_idx  # if the num is < 0 our metric set the order much bellow as it should be
+                if scale_coef is not None:
+                    scaled_deviation_dict[ref_key] = sorted_ref_dict[ref_key] - sorted_metric_dict[ref_key]*scale_coef
+
     print(f"deviation list is: {deviation_list}")
+    print(30*"*")
+    print(f"deviation dict is: {deviation_dict}")
+    print(30*"*")
+    print(f"scaled deviation dict is: {scaled_deviation_dict}")
+    print(30*"*")
     print(np.sum(np.array(deviation_list)))
 
     return np.sum(np.array(deviation_list))
 
 
-def apply_transformation(transform_func, list):
-    return map(transform_func, list)
+def normalize(normalization_func, dict):
+    return 
+
+
+def get_min_max(list):
+    return min(list), max(list)
