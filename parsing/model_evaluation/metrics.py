@@ -137,8 +137,8 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
     # deviation_dict = {}
 
 
-    for ref_idx, metric_key in enumerate(sorted_ref_dict.keys()):
-        for met_idx, ref_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+    for ref_idx, ref_key in enumerate(sorted_ref_dict.keys()):
+        for met_idx, metric_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
             if metric_key == ref_key:
                 deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
                 # deviation_dict[ref_key] = ref_idx - met_idx 
@@ -166,14 +166,16 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
 
     
 
-    for ref_idx, metric_key in enumerate(sorted_ref_dict.keys()):
-        for met_idx, ref_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
+    for ref_idx, ref_key in enumerate(sorted_ref_dict.keys()):
+        for met_idx, metric_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
             if metric_key == ref_key:
                 deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
                 deviation_dict[ref_key] = met_idx - ref_idx  # if the num is < 0 our metric set the order much bellow as it should be
                 if scale_coef is not None:
                     # deviation between ref rep and metric rep in %
-                    scaled_deviation_dict[ref_key] = (1 - ( (sorted_metric_dict[ref_key]*scale_coef) / sorted_ref_dict[ref_key] ) ) * 100 if sorted_metric_dict[ref_key] != 0 else 100
+                    scaled_deviation_dict[ref_key] = abs( (sorted_metric_dict[ref_key]) - ((sorted_ref_dict[ref_key]/95315)*100) )
+
+
 
     scaled_deviation_list = list(scaled_deviation_dict.values())
     print(f"order deviation list is: {deviation_list}")
@@ -203,3 +205,15 @@ def min_max_normalize(dict):
 
 def get_min_max(list):
     return min(list), max(list)
+
+
+def get_section_match(book_dict, user_dict, metric_function):
+    overal_metric_sim = {}
+    for user_key in user_dict.keys():
+        # print(book_key)
+        local_metric_sim = []
+        for book_key in book_dict.keys():
+            # print(user_key)
+            local_metric_sim.append(metric_function(user_dict[user_key], book_dict[book_key]))
+        overal_metric_sim[user_key] = local_metric_sim
+    return overal_metric_sim

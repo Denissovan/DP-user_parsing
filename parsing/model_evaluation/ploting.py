@@ -15,28 +15,33 @@ def autolabel(rects, ax):
 
 
 def plot_vals(val_dict1=None, val_dict2=None, metric_name1=None, metric_name2=None):
+  
+  plt.rcParams['figure.figsize'] = [15, 6]
+  # plt.style.use('ggplot')
+  plt.rcParams["figure.autolayout"] = True
+  
   labels = [str(i+1) for i in range(0, len(val_dict1.keys()))]
 
   x = np.arange(len(labels))  # the label locations
-  width = 0.35  # the width of the bars
+  width = 0.4  # the width of the bars
 
   fig, ax = plt.subplots()
-  rects2 = ax.bar(x + width/2, val_dict1.values(), width, label= metric_name1)
-  rects1 = ax.bar(x - width/2, val_dict2.values(), width, label=metric_name2, color="red")
+  rects2 = ax.bar(x + 0.2, val_dict1.values(), width, label= metric_name1, align="center")
+  rects1 = ax.bar(x - 0.2, val_dict2.values(), width, label=metric_name2, color="red", align="center")
   # rects3 = ax.bar(x + width, phrases_overal_cos_sim.values(), width, label='Cosine')
 
   # Add some text for labels, title and custom x-axis tick labels, etc.
   ax.set_ylabel('Scores')
   ax.set_xlabel('Users')
   ax.set_title('User scores by metric')
-  ax.set_xticks(x)
-  ax.set_xticklabels(labels)
+  # ax.set_xticks(x)
+  # ax.set_xticklabels(labels)
   ax.legend()
+
 
   # autolabel(rects1, ax)
   # autolabel(rects2, ax)
   # autolabel(rects3)
 
-  fig.tight_layout()
 
   plt.show()
