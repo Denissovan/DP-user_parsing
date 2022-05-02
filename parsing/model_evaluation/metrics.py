@@ -1,6 +1,7 @@
 from collections import Counter
 from itertools import count
 from statistics import mean
+from weakref import ref
 from scipy.spatial import distance
 import numpy as np
 import statistics
@@ -10,7 +11,7 @@ import statistics
 def jaccard_similarity(list1, list2):
     intersection = len(set(list1).intersection(list2)) #no need to call list here
     union = len(list1 + list2) - intersection #you only need to call len once here
-    return round((intersection / union)*100, 5) #also no need to cast to float as this will be done for you
+    return round((intersection / union)*100, 5)  # in %
 
 
 def cosine_sim(list1, list2):
@@ -26,68 +27,37 @@ def cosine_sim(list1, list2):
     len_b  = sum(bv for bv in b_vect) ** 0.5
 
     dot    = sum(av*bv for av,bv in zip(a_vect, b_vect))
-
-    # if (len_a * len_b) == 0:
-    #     cosine = 0
-    # else:
     return dot / (len_a * len_b)  
 
 
 def get_cosine_sim(user_dict, merged_book):
-  results = {}
-  for key in user_dict.keys():
-    # a = Counter(list(set(user_dict[key])))
-    # b = Counter(list(set(merged_book)))
-
-    # phrases  = list(a.keys() | b.keys())
-
-    # a_vect = [a.get(phrase, 0) for phrase in phrases]
-    # b_vect = [b.get(phrase, 0) for phrase in phrases] 
-
-    # len_a  = sum(av for av in a_vect) ** 0.5
-    # len_b  = sum(bv for bv in b_vect) ** 0.5
-
-    # dot    = sum(av*bv for av,bv in zip(a_vect, b_vect))
-
-    # if (len_a * len_b) == 0:
-    #     cosine = 0
-    # else:
-    # cosine = dot / (len_a * len_b) 
-    cosine = cosine_sim(user_dict[key], merged_book)
-
-
-    results[key] = (round(cosine * 100, 5))
-  return results
+    results = {}
+    for key in user_dict.keys():
+        cosine = cosine_sim(user_dict[key], merged_book)
+        results[key] = (round(cosine * 100, 5))
+    return results   # in %
 
 
 def euclid_dis(list1, list2):
-  a = Counter(list(set(list1)))
-  b = Counter(list(set(list2)))
+    a = Counter(list(set(list1)))
+    b = Counter(list(set(list2)))
 
-  phrases  = list(a.keys() | b.keys())
+    phrases  = list(a.keys() | b.keys())
 
-  a_vect = [a.get(phrase, 0) for phrase in phrases]
-  b_vect = [b.get(phrase, 0) for phrase in phrases]
+    a_vect = [a.get(phrase, 0) for phrase in phrases]
+    b_vect = [b.get(phrase, 0) for phrase in phrases]
 
-  return distance.euclidean(a_vect, b_vect)
+    return distance.euclidean(a_vect, b_vect)
  
 
 def get_euclid_dis(user_dict, merged_book):
 
-  results = {}
-  for key in user_dict.keys():
-    # a = Counter(list(set(user_dict[key])))
-    # b = Counter(list(set(merged_book)))
+    results = {}
+    expert_user = euclid_dis(user_dict['userId1352'], merged_book)
+    for key in user_dict.keys():
+        results[key] = (euclid_dis(user_dict[key], merged_book) / expert_user) * 100  # conversion from euclidean distance to euclidean similarity
 
-    # phrases  = list(a.keys() | b.keys())
-
-    # a_vect = [a.get(phrase, 0) for phrase in phrases]
-    # b_vect = [b.get(phrase, 0) for phrase in phrases] 
- 
-    # results[key] = (distance.euclidean(a_vect, b_vect))
-    results[key] = euclid_dis(user_dict[key], merged_book)
-
-  return results
+    return results
 
 
 def get_sorted_dicts(metric_dict1, ref_dict2):
@@ -186,11 +156,18 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     print(30*"*")
     print(f"scaled deviation dict is: {scaled_deviation_dict}")
     print(30*"*")
-    if len(scaled_deviation_list) != 0:
-        print(f"mean scaled deviation is: {np.mean(np.abs(np.array(scaled_deviation_list)))}")
-        print(30*"*")
-        print(f"max scaled deviation is: {np.max(np.abs(np.array(scaled_deviation_list)))}")
-        print(30*"*")
+    print(f"mean scaled deviation is: {np.mean(np.abs(np.array(scaled_deviation_list)))}")
+    print(30*"*")
+    print(f"max scaled deviation is: {np.max(np.abs(np.array(scaled_deviation_list)))}")
+    print(30*"*")
+    std_dev_metric = np.std(np.abs(np.array(list(sorted_metric_dict.values()))))
+    print(f"std metric dev is: {std_dev_metric}")
+    print(30*"*")
+    ref_value_list = list(sorted_ref_dict.values())
+    ref_val_arr = (np.array(ref_value_list)/95315)*100
+    print(f"std ref dev is: {np.std(ref_val_arr)}")
+    print(30*"*")
+
 
     return np.sum(np.array(deviation_list))
 
