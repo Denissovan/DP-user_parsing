@@ -27,14 +27,14 @@ def cosine_sim(list1, list2):
     len_b  = sum(bv for bv in b_vect) ** 0.5
 
     dot    = sum(av*bv for av,bv in zip(a_vect, b_vect))
-    return dot / (len_a * len_b)  
+    return (round( (dot / (len_a * len_b) ) * 100), 5)  
 
 
 def get_cosine_sim(user_dict, merged_book):
     results = {}
     for key in user_dict.keys():
         cosine = cosine_sim(user_dict[key], merged_book)
-        results[key] = (round(cosine * 100, 5))
+        results[key] = cosine
     return results   # in %
 
 
