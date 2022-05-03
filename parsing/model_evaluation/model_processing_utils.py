@@ -28,6 +28,26 @@ def merge_into_existing_model(original_model, model_to_add):
     return [phrase for phrase in (set(i for i in loc_model))]
 
 
+def merge_sub_sec_into_sec(sec_df, book_dict):
+    section_list = sorted(list(sec_df['sections'].unique()))
+    top_range = section_list[-1]
+
+    section_dict = {}
+
+    for sec in range(1, top_range + 1):
+        local_df = sec_df.loc[sec_df['sections'] == sec]
+        local_phrase_list = []
+        
+        for row in local_df['sub_sections']:
+            sub_sec_key = row
+            local_phrase_list += book_dict[str(sub_sec_key)]
+            
+        deduplicated_phrase_list = merge_into_existing_model([], local_phrase_list)
+        section_dict[sec] = deduplicated_phrase_list
+
+    return section_dict
+
+
 # if user_book == "users" -> phrase_dict is a dict
 # if user_book == "book" -> phrase_dict is a list
 def join_phrases_into_words(phrase_dict, users_book="book"):
