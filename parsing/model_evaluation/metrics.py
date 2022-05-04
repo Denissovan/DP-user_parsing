@@ -27,7 +27,7 @@ def cosine_sim(list1, list2):
     len_b  = sum(bv for bv in b_vect) ** 0.5
 
     dot    = sum(av*bv for av,bv in zip(a_vect, b_vect))
-    return (round( (dot / (len_a * len_b) ) * 100), 5)  
+    return round( (dot / (len_a * len_b) ) * 100, 5)  
 
 
 def get_cosine_sim(user_dict, merged_book):
@@ -143,7 +143,7 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
                 deviation_dict[ref_key] = met_idx - ref_idx  # if the num is < 0 our metric set the order much bellow as it should be
                 if scale_coef is not None:
                     # deviation between ref rep and metric rep in %
-                    scaled_deviation_dict[ref_key] = abs( (sorted_metric_dict[ref_key]) - ((sorted_ref_dict[ref_key]/95315)*100) )
+                    scaled_deviation_dict[ref_key] = abs( (sorted_metric_dict[ref_key] * scale_coef) - ((sorted_ref_dict[ref_key]/95315) * 100) )
 
 
 
@@ -156,7 +156,8 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     print(30*"*")
     print(f"scaled deviation dict is: {scaled_deviation_dict}")
     print(30*"*")
-    print(f"mean scaled deviation is: {np.mean(np.abs(np.array(scaled_deviation_list)))}")
+    scaled_mean = sum(scaled_deviation_list) / len(scaled_deviation_list)
+    print(f"mean scaled deviation is: {scaled_mean}")
     print(30*"*")
     print(f"max scaled deviation is: {np.max(np.abs(np.array(scaled_deviation_list)))}")
     print(30*"*")
