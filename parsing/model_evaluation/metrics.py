@@ -53,9 +53,15 @@ def euclid_dis(list1, list2):
 def get_euclid_dis(user_dict, merged_book):
 
     results = {}
-    expert_user = euclid_dis(user_dict['userId1352'], merged_book)
+    # expert_user = euclid_dis(user_dict['userId1352'], merged_book)
+
     for key in user_dict.keys():
-        results[key] = (euclid_dis(user_dict[key], merged_book) / expert_user) * 100  # conversion from euclidean distance to euclidean similarity
+        results[key] =  ((1 / (1 + (euclid_dis(user_dict[key], merged_book))))) * 100
+
+
+    # results = min_max_normalize(results)
+    # for key in results.keys():
+    #     results[key] = (results[key] / 95315) * 100  # conversion from euclidean distance to euclidean similarity
 
     return results
 
@@ -143,7 +149,7 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
                 deviation_dict[ref_key] = met_idx - ref_idx  # if the num is < 0 our metric set the order much bellow as it should be
                 if scale_coef is not None:
                     # deviation between ref rep and metric rep in %
-                    scaled_deviation_dict[ref_key] = abs( (sorted_metric_dict[ref_key] * scale_coef) - ((sorted_ref_dict[ref_key]/95315) * 100) )
+                    scaled_deviation_dict[ref_key] = (sorted_metric_dict[ref_key] * scale_coef) - ((sorted_ref_dict[ref_key]/95315) * 100)
 
 
 
@@ -157,7 +163,7 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     print(f"scaled deviation dict is: {scaled_deviation_dict}")
     print(30*"*")
     scaled_mean = sum(scaled_deviation_list) / len(scaled_deviation_list)
-    print(f"mean scaled deviation is: {scaled_mean}")
+    print(f"mean scaled deviation is: {np.mean(np.abs(np.array(scaled_deviation_list)))}")
     print(30*"*")
     print(f"max scaled deviation is: {np.max(np.abs(np.array(scaled_deviation_list)))}")
     print(30*"*")
