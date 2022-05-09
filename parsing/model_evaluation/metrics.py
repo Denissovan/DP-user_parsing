@@ -57,16 +57,8 @@ def euclid_dis(list1, list2):
 def get_euclid_dis(user_dict, merged_book):
 
     results = {}
-    # expert_user = euclid_dis(user_dict['userId1352'], merged_book)
-
     for key in user_dict.keys():
         results[key] =  ((1 / (1 + (euclid_dis(user_dict[key], merged_book))))) * 100
-
-
-    # results = min_max_normalize(results)
-    # for key in results.keys():
-    #     results[key] = (results[key] / 95315) * 100  # conversion from euclidean distance to euclidean similarity
-
     return results
 
 
@@ -81,8 +73,8 @@ def calculate_order_score(metric_dict1, ref_dict2):
     right = 0
     wrong = 0
 
-    print(f"reference list: {list(sorted_ref_dict.keys())}")
-    print(f"metric list: {list(sorted_metric_dict.keys())}")
+    # print(f"reference list: {list(sorted_ref_dict.keys())}")
+    # print(f"metric list: {list(sorted_metric_dict.keys())}")
 
     for metric_key, ref_key in zip(sorted_metric_dict.keys(), sorted_ref_dict.keys()):
         if metric_key == ref_key:
@@ -114,25 +106,16 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
     deviation_list = []
-    # deviation_dict = {}
-
 
     for ref_idx, ref_key in enumerate(sorted_ref_dict.keys()):
         for met_idx, metric_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
             if metric_key == ref_key:
                 deviation_list.append(abs(ref_idx - met_idx)) # go throught the whole second dict and find for every elemnt the deviation compared to the true position
-                # deviation_dict[ref_key] = ref_idx - met_idx 
-    # print(f"deviation list is: {deviation_list}")
-    # print(f"deviation dict is: {deviation_dict}")
 
     mean_dev = np.mean(np.array(deviation_list))
     bellow_mean_dev_count = len([elem for elem in deviation_list if elem < mean_dev])  # calculate count of values < mean_dev
-    # mode_dev = statistics.mode(deviation_list)
-    # bellow_mode_dev_count = len([elem for elem in deviation_list if elem < mode_dev])  # calculate count of values < mode_dev
     print(f"mean deviation: {mean_dev}")
     print(f"num of values bellow mean dev: {bellow_mean_dev_count}")
-    # print(f"num of values bellow mode dev: {bellow_mode_dev_count}")
-
     
     return np.mean(np.array(deviation_list))
 
@@ -154,8 +137,6 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
                 if scale_coef is not None:
                     # deviation between ref rep and metric rep in %
                     scaled_deviation_dict[ref_key] = (sorted_metric_dict[ref_key] * scale_coef) - ((sorted_ref_dict[ref_key]/95315) * 100)
-
-
 
     scaled_deviation_list = list(scaled_deviation_dict.values())
     print(f"order deviation list is: {deviation_list}")
@@ -179,7 +160,6 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     print(f"std ref dev is: {np.std(ref_val_arr)}")
     print(30*"*")
 
-
     return np.sum(np.array(deviation_list))
 
 
@@ -198,10 +178,8 @@ def get_min_max(list):
 def get_section_match(book_dict, user_dict, metric_function):
     overal_metric_sim = {}
     for user_key in user_dict.keys():
-        # print(book_key)
         local_metric_sim = []
         for book_key in book_dict.keys():
-            # print(user_key)
             local_metric_sim.append(metric_function(user_dict[user_key], book_dict[book_key]))
         overal_metric_sim[user_key] = local_metric_sim
     return overal_metric_sim
