@@ -9,7 +9,7 @@ def get_list_from_file(dir_path, num_of_files_to_read="all"):
     sec_dict = {}
     num_of_files_to_read = len(os.listdir(dir_path)) if num_of_files_to_read == "all" else num_of_files_to_read
     for file in tqdm.tqdm(sec_files[:num_of_files_to_read]):
-        with open(os.path.join(dir_path, file), "r") as f:
+        with open(os.path.join(dir_path, file), "r", encoding='utf-8') as f:
             file_string = f.read().strip()
             tuples = eval(file_string)
             del file_string
@@ -22,12 +22,13 @@ def get_user_dict_from_file(dir_path):
     user_dirs = os.listdir(dir_path)                               # get all the folders in the answer/question dir
     user_dict = {}
     for dir in tqdm.tqdm(user_dirs):
-      # print(dir)
+    #   print(dir)
       user_files = os.listdir(os.path.join(dir_path, dir))
       tuple_list = []
       for user_f in user_files:
         local_dir = os.path.join(dir_path, dir)
-        with open(os.path.join(local_dir, user_f), "r") as f:
+        # print(f"user file is: {user_f}")
+        with open(os.path.join(local_dir, user_f), "r", encoding='utf-8') as f:
             file_string = f.read().strip()
             tuple_list += eval(file_string)
 

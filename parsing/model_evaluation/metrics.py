@@ -7,6 +7,10 @@ import numpy as np
 import statistics
 
 
+def get_model_intersection(list1, list2):
+    intersection = set(list1).intersection(list2)
+    return list(intersection)
+
 # jaccard metric
 def jaccard_similarity(list1, list2):
     intersection = len(set(list1).intersection(list2)) #no need to call list here
