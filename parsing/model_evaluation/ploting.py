@@ -31,9 +31,9 @@ def plot_vals(val_dict1=None, val_dict2=None, metric_name1=None, metric_name2=No
   # rects3 = ax.bar(x + width, phrases_overal_cos_sim.values(), width, label='Cosine')
 
   # Add some text for labels, title and custom x-axis tick labels, etc.
-  ax.set_ylabel('Scores')
-  ax.set_xlabel('Users')
-  ax.set_title('User scores by metric')
+  ax.set_ylabel('Skóre')
+  ax.set_xlabel('Používatelia')
+  ax.set_title('Skóre používateľov podľa metriky')
   # ax.set_xticks(x)
   # ax.set_xticklabels(labels)
   ax.legend()
