@@ -10,11 +10,13 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 
+# lemantizing and joining the tuples from loaded model into string phrase : ("played", "game") => "play game"
 def join_tuples_and_lemantize(dictionary):
     for key in tqdm.tqdm(dictionary.keys()):
         dictionary[key] = [f"{WordNetLemmatizer().lemmatize(t1.lower())} {WordNetLemmatizer().lemmatize(t2.lower())}" for t1,t2 in dictionary[key] if t1.lower() not in stopwords.words('english') and t2.lower() not in stopwords.words('english')]
 
 
+# collecting each sub model from sections into a big combined model
 def merge_models(dictionary):
     loc_list = []
     for key in tqdm.tqdm(dictionary.keys()):
@@ -22,12 +24,14 @@ def merge_models(dictionary):
     return [phrase for phrase in (set(i for i in loc_list))]
 
 
+# merging multiple models into one big model
 def merge_into_existing_model(original_model, model_to_add):
     # loc_model = merge_models(model_to_add)
     loc_model = original_model + model_to_add
     return [phrase for phrase in (set(i for i in loc_model))]
 
 
+# merging sub sections into sections : 1.1, 1.2, 1.3 => 1
 def merge_sub_sec_into_sec(sec_df, book_dict):
     section_list = sorted(list(sec_df['sections'].unique()))
     top_range = section_list[-1]
@@ -48,6 +52,7 @@ def merge_sub_sec_into_sec(sec_df, book_dict):
     return section_dict
 
 
+# creating model by spliting the string phrases into single words 
 # if user_book == "users" -> phrase_dict is a dict
 # if user_book == "book" -> phrase_dict is a list
 def join_phrases_into_words(phrase_dict, users_book="book"):

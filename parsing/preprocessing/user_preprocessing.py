@@ -13,6 +13,7 @@ tags_pattern = re.compile(r"<.*?>")
 #     return post
 
 
+# func to remove the html tags
 def remove_df_body_tags(body):
     return re.sub(tags_pattern, "", body)
 
@@ -121,10 +122,12 @@ def remove_df_body_tags(body):
 #         print(f"user_id : {user.getAttribute('Id')}, reputation : {user.getAttribute('Reputation')}, count of answers : {len(user_a)}, count of questions : {len(user_q)}")
 
 
+# removing new line chars
 def remove_newlines_in_post(sentence):
     return re.sub('\n', ' ', sentence)
 
 
+# preprocesing the questions/answers: removing new lines, deleting unwanted signs and tokinazation
 def preproces_questions_into_tokens(q_dict):
     for key in tqdm.tqdm(q_dict.keys()):
         q_dict[key] = remove_newlines_in_post(q_dict[key])
@@ -134,12 +137,14 @@ def preproces_questions_into_tokens(q_dict):
         q_dict[key] = delete_unwanted_signs(q_dict[key])
 
 
+# func to save the input dictionary to the path specified alongside with the file name
 def save_dict_to_file(path_dir, file_name, user_dict):
   if not os.path.exists(os.path.join(path_dir, file_name)):
       with open(os.path.join(path_dir, file_name), "a") as fi:
           fi.writelines(str(user_dict))
 
 
+# getting the key values of a dictionary
 def get_list_of_posts(id_body):
     post_list = [key for key in id_body.keys()]
     return post_list

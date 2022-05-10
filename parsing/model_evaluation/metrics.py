@@ -7,9 +7,11 @@ import numpy as np
 import statistics
 
 
+# getting the phrases, words which the two models share
 def get_model_intersection(list1, list2):
     intersection = set(list1).intersection(list2)
     return list(intersection)
+
 
 # jaccard metric
 def jaccard_similarity(list1, list2):
@@ -18,6 +20,7 @@ def jaccard_similarity(list1, list2):
     return round((intersection / union)*100, 5)  # in %
 
 
+# cosine similarity metric
 def cosine_sim(list1, list2):
     a = Counter(list(set(list1)))
     b = Counter(list(set(list2)))
@@ -34,6 +37,7 @@ def cosine_sim(list1, list2):
     return round( (dot / (len_a * len_b) ) * 100, 5)  
 
 
+# cosine similarity for the whole user dictionary 
 def get_cosine_sim(user_dict, merged_book):
     results = {}
     for key in user_dict.keys():
@@ -42,6 +46,7 @@ def get_cosine_sim(user_dict, merged_book):
     return results   # in %
 
 
+# euclidean metric
 def euclid_dis(list1, list2):
     a = Counter(list(set(list1)))
     b = Counter(list(set(list2)))
@@ -54,6 +59,7 @@ def euclid_dis(list1, list2):
     return distance.euclidean(a_vect, b_vect)
  
 
+# euclidean similarity for the whole user dictionary
 def get_euclid_dis(user_dict, merged_book):
 
     results = {}
@@ -62,12 +68,13 @@ def get_euclid_dis(user_dict, merged_book):
     return results
 
 
+# sorting both dictionaries
 def get_sorted_dicts(metric_dict1, ref_dict2):
     return (dict(sorted(metric_dict1.items(), key=lambda item: item[1])), dict(sorted(ref_dict2.items(), key=lambda item: item[1])))
 
 
+# calculating the order evaluations
 def calculate_order_score(metric_dict1, ref_dict2):
-
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
     right = 0
@@ -86,6 +93,7 @@ def calculate_order_score(metric_dict1, ref_dict2):
     print(f"User on wrong position: {wrong}")
 
 
+# calculating maximal deviations of the metric dict based on the ref dict
 def calculate_max_deviation(metric_dict1, ref_dict2):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
@@ -102,6 +110,7 @@ def calculate_max_deviation(metric_dict1, ref_dict2):
     return max_deviation
 
 
+# calculating mean deviations of the metric dict based on the ref dict
 def calculate_mean_deviation(metric_dict1, ref_dict2):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
@@ -120,14 +129,13 @@ def calculate_mean_deviation(metric_dict1, ref_dict2):
     return np.mean(np.array(deviation_list))
 
 
+# calculating total deviations of the metric dict based on the ref dict
 def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     sorted_metric_dict, sorted_ref_dict = get_sorted_dicts(metric_dict1, ref_dict2)
 
     deviation_list = []
     deviation_dict = {}
     scaled_deviation_dict = {}
-
-    
 
     for ref_idx, ref_key in enumerate(sorted_ref_dict.keys()):
         for met_idx, metric_key in enumerate(sorted_metric_dict.keys()): # the index of the enumerate is the var to calculate the current deviation
@@ -163,6 +171,7 @@ def calculate_total_deviation(metric_dict1, ref_dict2, scale_coef=None):
     return np.sum(np.array(deviation_list))
 
 
+# data normalization
 def min_max_normalize(dict):
     min_max_list = dict.values()
     norm_min, norm_max = min(min_max_list), max(min_max_list)
@@ -175,6 +184,7 @@ def get_min_max(list):
     return min(list), max(list)
 
 
+# calculating the matching between the book and the users based on metric
 def get_section_match(book_dict, user_dict, metric_function):
     overal_metric_sim = {}
     for user_key in user_dict.keys():
