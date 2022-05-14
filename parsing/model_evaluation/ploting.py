@@ -65,13 +65,14 @@ def plot_chapter_matching(matching_dict, id_name):
   plt.show()
 
 
-def plot_chapter_matching_pie(matching_dict, id_name):
-  chap_names = list(map(str, matching_dict.keys()))
+def plot_chapter_matching_pie(matching_dict, id_name, legend_vals=None):
+  chap_names = legend_vals
   matching_values = list(matching_dict.values())
 
   fig = plt.figure(figsize = (10, 5))
   plt.pie(matching_values, labels=chap_names,
   autopct='%1.1f%%', shadow=True, startangle=140)
   plt.title(f"Profil používateľa s ID {id_name}")
-
+  # if legend_vals is not None:
+  #   plt.legend(legend_vals,loc="best")
   plt.show()
