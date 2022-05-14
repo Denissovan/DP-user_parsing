@@ -45,3 +45,21 @@ def plot_vals(val_dict1=None, val_dict2=None, metric_name1=None, metric_name2=No
 
 
   plt.show()
+
+
+def plot_chapter_matching(matching_dict, id_name):
+  chap_names = list(map(str, matching_dict.keys()))
+  matching_values = list(matching_dict.values())
+
+  fig = plt.figure(figsize = (10, 5))
+  #  Bar plot
+  plt.bar(chap_names, matching_values, color ='blue',
+          width = 0.5)
+
+  plt.xticks(rotation='vertical')
+
+  plt.xlabel("Kapitoly z knihy")
+  plt.ylabel("Matching [%]")
+  plt.title(f"Profil používateľa s ID {id_name}")
+
+  plt.show()
